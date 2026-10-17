@@ -8,6 +8,9 @@ import { initTelemetry } from "@/shared/telemetry";
 import { initBackgroundStorageAnalytics } from "@/shared/utils/cacheManager";
 import { initApiEndpointProbe } from "@/shared/api";
 import { initAndroidMedia } from "@/native/androidMedia";
+import { installAndroidSigner } from "@/platform/androidSigner";
+
+installAndroidSigner();
 
 // Initialize global uncaught error, telemetry listeners, background storage tracker, and edge health probe
 initGlobalErrorHandlers();

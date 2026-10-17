@@ -9,6 +9,10 @@ const config: CapacitorConfig = {
     // áudio/stream http de fallback (edge.tryliner.fun:10518) precisa de http
     allowMixedContent: true,
   },
+  plugins: {
+    // faz fetch/XHR passarem pelo código nativo (sem bloqueio de CORS do WebView)
+    CapacitorHttp: { enabled: true },
+  },
   server: {
     androidScheme: "https",
   },

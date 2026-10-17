@@ -1,3 +1,4 @@
+import { getSigner } from "@/platform/androidSigner";
 // signs outgoing api requests with canonical headers: x-liner-signature, timestamp, nonce
 export interface SignedHeaders {
   "x-liner-signature"?: string;
@@ -20,8 +21,8 @@ export function syncServerTime(dateHeaderOrMs: string | number | Date): number {
   if (!Number.isNaN(serverMs) && serverMs > 0) {
     serverTimeOffsetMs = serverMs - Date.now();
     // notify electron main process to sync its native signer clock
-    if (typeof window !== "undefined" && window.linerElectron?.syncServerTime) {
-      window.linerElectron.syncServerTime(serverMs).catch(() => {});
+    if (typeof window !== "undefined" && getSigner()?.syncServerTime) {
+      getSigner().syncServerTime(serverMs).catch(() => {});
     }
   }
   return serverTimeOffsetMs;
@@ -36,7 +37,7 @@ export function getAdjustedTimestamp(): number {
 }
 
 function isElectron(): boolean {
-  return typeof window !== "undefined" && typeof window.linerElectron?.signRequest === "function";
+  return typeof window !== "undefined" && typeof getSigner()?.signRequest === "function";
 }
 
 export async function signApiRequest(
@@ -58,7 +59,7 @@ export async function signApiRequest(
   const timestamp = customTimestamp ?? getAdjustedTimestamp();
 
   try {
-    const res = await window.linerElectron!.signRequest({
+    const res = await getSigner().signRequest({
       method: method.toUpperCase().trim(),
       path: cleanPath,
       body: body ?? undefined,
